@@ -15,6 +15,8 @@
 		ECAB727D1BB6751100686B0C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECAB727B1BB6751100686B0C /* LaunchScreen.storyboard */; };
 		ECAB72861BB67C6D00686B0C /* Resentment+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAB72841BB67C6D00686B0C /* Resentment+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
 		ECAB72871BB67C6D00686B0C /* Resentment.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAB72851BB67C6D00686B0C /* Resentment.swift */; settings = {ASSET_TAGS = (); }; };
+		ECF8ADF91BBB9E1F00E76EE5 /* ResentmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF8ADF81BBB9E1F00E76EE5 /* ResentmentView.swift */; settings = {ASSET_TAGS = (); }; };
+		ECF8ADFB1BBBBD6D00E76EE5 /* managedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF8ADFA1BBBBD6D00E76EE5 /* managedObjectContext.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		ECAB727E1BB6751100686B0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ECAB72841BB67C6D00686B0C /* Resentment+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Resentment+CoreDataProperties.swift"; path = "../Resentment+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ECAB72851BB67C6D00686B0C /* Resentment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Resentment.swift; path = ../Resentment.swift; sourceTree = "<group>"; };
+		ECF8ADF81BBB9E1F00E76EE5 /* ResentmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResentmentView.swift; sourceTree = "<group>"; };
+		ECF8ADFA1BBBBD6D00E76EE5 /* managedObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = managedObjectContext.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,10 +69,12 @@
 				ECAB726F1BB6751100686B0C /* AppDelegate.swift */,
 				ECAB72711BB6751100686B0C /* ViewController.swift */,
 				ECAB72731BB6751100686B0C /* Main.storyboard */,
+				ECF8ADF81BBB9E1F00E76EE5 /* ResentmentView.swift */,
 				ECAB72791BB6751100686B0C /* Assets.xcassets */,
 				ECAB727B1BB6751100686B0C /* LaunchScreen.storyboard */,
 				ECAB727E1BB6751100686B0C /* Info.plist */,
 				ECAB72761BB6751100686B0C /* FourthStep.xcdatamodeld */,
+				ECF8ADFA1BBBBD6D00E76EE5 /* managedObjectContext.swift */,
 			);
 			path = FourthStep;
 			sourceTree = "<group>";
@@ -146,6 +152,8 @@
 				ECAB72871BB67C6D00686B0C /* Resentment.swift in Sources */,
 				ECAB72721BB6751100686B0C /* ViewController.swift in Sources */,
 				ECAB72701BB6751100686B0C /* AppDelegate.swift in Sources */,
+				ECF8ADFB1BBBBD6D00E76EE5 /* managedObjectContext.swift in Sources */,
+				ECF8ADF91BBB9E1F00E76EE5 /* ResentmentView.swift in Sources */,
 				ECAB72861BB67C6D00686B0C /* Resentment+CoreDataProperties.swift in Sources */,
 				ECAB72781BB6751100686B0C /* FourthStep.xcdatamodeld in Sources */,
 			);
