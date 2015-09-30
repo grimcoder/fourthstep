@@ -26,8 +26,8 @@
 		ECAB72791BB6751100686B0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ECAB727C1BB6751100686B0C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ECAB727E1BB6751100686B0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ECAB72841BB67C6D00686B0C /* Resentment+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Resentment+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		ECAB72851BB67C6D00686B0C /* Resentment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resentment.swift; sourceTree = "<group>"; };
+		ECAB72841BB67C6D00686B0C /* Resentment+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Resentment+CoreDataProperties.swift"; path = "../Resentment+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		ECAB72851BB67C6D00686B0C /* Resentment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Resentment.swift; path = ../Resentment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +44,6 @@
 		ECAB72631BB6751100686B0C = {
 			isa = PBXGroup;
 			children = (
-				ECAB72841BB67C6D00686B0C /* Resentment+CoreDataProperties.swift */,
-				ECAB72851BB67C6D00686B0C /* Resentment.swift */,
 				ECAB726E1BB6751100686B0C /* FourthStep */,
 				ECAB726D1BB6751100686B0C /* Products */,
 			);
@@ -62,6 +60,8 @@
 		ECAB726E1BB6751100686B0C /* FourthStep */ = {
 			isa = PBXGroup;
 			children = (
+				ECAB72841BB67C6D00686B0C /* Resentment+CoreDataProperties.swift */,
+				ECAB72851BB67C6D00686B0C /* Resentment.swift */,
 				ECAB726F1BB6751100686B0C /* AppDelegate.swift */,
 				ECAB72711BB6751100686B0C /* ViewController.swift */,
 				ECAB72731BB6751100686B0C /* Main.storyboard */,
@@ -297,6 +297,7 @@
 				ECAB72831BB6751100686B0C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
