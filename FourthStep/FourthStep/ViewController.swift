@@ -1,120 +1,229 @@
-//
-//  ViewController.swift
-//  FourthStep
-//
-//  Created by Taras Kovtun on 9/25/15.
-//  Copyright © 2015 Taras Kovtun. All rights reserved.
-//
-
 import UIKit
 import CoreData
+import Alamofire
+import SwiftyJSON
+
 
 class ViewController: UITableViewController  {
 
-    @IBAction func asdqwe(sender: AnyObject) {
-        // Do any additional setup after loading the view, typically from a nib.
+    let moc = ObjectContext.managedObjectContext
+    
+    @IBAction func ImportFile(sender: AnyObject) {
         
-        // Use optional binding to confirm the managedObjectContext
-        let moc = self.managedObjectContext
+
+    }
+    
+    func importR(url: NSURL){
         
-        // Create some dummy data to work with
-        var items = [
-            ("Alex", "Has a nicer girl", "Self esteem")
-        ]
+        let a = url.lastPathComponent
+        var string = FileLoad.loadString(a!, directory: NSSearchPathDirectory.DocumentDirectory, subdirectory: "Inbox")
+        Resentment.resetResentments(moc, resentments: resentments)
         
-        // Loop through, creating items
-        for (itemTitle, itemText, affected) in items {
-            // Create an individual item
-            Resentment.createInManagedObjectContext(moc,
-                who: itemTitle, didwhat: itemText, affectedMy: affected)
+        if let dataFromString = string!.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+            let json = JSON(data: dataFromString)
+            for (key,subJson):(String, JSON) in json {
+                Resentment.createInManagedObjectContext(moc, who: String(subJson["who"]), didwhat: String(subJson["didwhat"]), affectedMy: String(subJson["affectedMy"]))
+                
+            }
         }
-        var error : NSError?
-        
-        do { try managedObjectContext.save()          }
+
+        do {
+            try
+                ObjectContext.managedObjectContext.save()
+        }
             
         catch{
+            
         }
+        
         fetchLog()
         
-            self.tableView.reloadData()
+    }
+    
+    @IBAction func ExportFile(sender: AnyObject) {
+
+        let jsonResentment = resentments.map {["who": $0.who!, "didwhat": $0.didwhat!, "affectedMy" : $0.affectedMy!]}
+        
+        print(jsonResentment)
+        
+        let jsonString  = JSON(jsonResentment).rawString()
+        
+        FileSave.saveString(jsonString!, directory: NSSearchPathDirectory.DocumentDirectory, path: "export.json", subdirectory: "")
+        
+        docController.presentOptionsMenuFromBarButtonItem(sender as! UIBarButtonItem, animated: true)
     }
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "ViewResentment") {
+            if let resentmentC =  segue.destinationViewController as? ResentmentView {
+                resentmentC.resentment = sender as? Resentment
+            }
+        }
+        
+        if (segue.identifier == "AddNew") {
 
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+        }
+    }
+    
+    // UIDocumentInteractionController instance is a class property
+    var docController:UIDocumentInteractionController!
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+            self.performSegueWithIdentifier("ViewResentment", sender: resentments[indexPath.row])
+    }
+    
+
     var resentments = [Resentment]()
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.viewController = self
         
-        // Do any additional setup after loading the view, typically from a nib.
+        let fileURL = NSFileManager.defaultManager().URLsForDirectory(NSSearchPathDirectory.DocumentDirectory,  inDomains: NSSearchPathDomainMask.UserDomainMask)[0].URLByAppendingPathComponent("export.json")
         
-        // Use optional binding to confirm the managedObjectContext
-        let moc = self.managedObjectContext
-            
-            // Create some dummy data to work with
-            var items = [
-                ("Alex", "Has a nicer girl", "Self esteem")
-            ]
-            
-            // Loop through, creating items
-            for (itemTitle, itemText, affected) in items {
-                // Create an individual item
-                Resentment.createInManagedObjectContext(moc,
-                    who: itemTitle, didwhat: itemText, affectedMy: affected)
-            }
+        // Instantiate the interaction controller
+        print(String(fileURL))
+        
+        self.docController = UIDocumentInteractionController(URL: fileURL)
         
         
+        refreshControl = UIRefreshControl()
+        refreshControl!.addTarget(self,
+            action: "handleRefresh:",
+            forControlEvents: .ValueChanged)
+        
+        tableView.addSubview(refreshControl!)
         fetchLog()
     }
     
+    func handleRefresh(paramSender: AnyObject) {
+        fetchLog()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchLog()
+        
+
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "persistentStoreDidChange", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "persistentStoreWillChange:", name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recieveICloudChanges:", name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+        
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+    }
+    
+    
+    func persistentStoreDidChange () {
+        // reenable UI and fetch data
+        self.navigationItem.title = "iCloud ready"
+        self.navigationItem.rightBarButtonItem?.enabled = true
+        
+        fetchLog()
+        
+    }
+    
+    func persistentStoreWillChange (notification:NSNotification) {
+        self.navigationItem.title = "Changes in progress"
+        // disable the UI
+        self.navigationItem.rightBarButtonItem?.enabled = false
+        
+        moc.performBlock { () -> Void in
+            if self.moc.hasChanges {
+                
+                var error:NSError? = nil
+                
+                do {
+                    try
+                        ObjectContext.managedObjectContext.save()
+                }
+                    
+                catch{
+                    
+                }
+                
+                if error != nil {
+                    print("Save error: \(error)")
+                }
+                else
+                {
+                    // drop any manged object refrences
+                    self.moc.reset()
+                }
+                
+                
+            }
+        }
+    }
+    
+    func recieveICloudChanges (notification:NSNotification){
+        moc.performBlock { () -> Void in
+            self.moc.mergeChangesFromContextDidSaveNotification(notification)
+            self.fetchLog()
+        }
+    }
+    
+
     // MARK: UITableViewDataSource
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // How many rows are there in this section?
-        // There's only 1 section, and it has a number of rows
-        // equal to the number of logItems, so return the count
         return resentments.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell?
-        
-        // Get the LogItem for this index
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell") 
         let logItem = resentments[indexPath.row]
-        
-        // Set the title of the cell to be the title of the logItem
+
         cell!.textLabel?.text = logItem.who
         return cell!
     }
-    
-    // MARK: UITableViewDelegate
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let logItem = resentments[indexPath.row]
-        print(logItem.didwhat)
-    }
 
+    override func tableView(tableView: UITableView,
+        commitEditingStyle editingStyle: UITableViewCellEditingStyle,
+        forRowAtIndexPath indexPath: NSIndexPath) {
+            
+            if editingStyle == .Delete {
+                        moc.deleteObject(resentments[indexPath.row])
+                do {
+                    try
+                        ObjectContext.managedObjectContext.save()
+                }
+                catch{
+                    
+                }
+            }
+            fetchLog()
+    }
+    
     
 
     func fetchLog() {
         let fetchRequest = NSFetchRequest(entityName: "Resentment")
-        
-        // Create a sort descriptor object that sorts on the "title"
-        // property of the Core Data object
         let sortDescriptor = NSSortDescriptor(key: "who", ascending: true)
         
-        // Set the list of sort descriptors in the fetch request,
-        // so it includes the sort descriptor
         fetchRequest.sortDescriptors = [sortDescriptor]
-        do{
-        if let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [Resentment] {
-            resentments  = fetchResults
+        do
+        {
+            if let fetchResults = try moc.executeFetchRequest(fetchRequest) as? [Resentment]
+            {
+                resentments  = fetchResults
             }
+        
         }
         catch
         {
             
         }
+        
+        self.refreshControl!.endRefreshing()
+        self.tableView.reloadData()
     }
     
     

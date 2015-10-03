@@ -17,5 +17,13 @@ extension Resentment {
         return newItem
     }
     
+    class func resetResentments(moc: NSManagedObjectContext, resentments : [Resentment]){
+        
+        for res: Resentment in resentments {
+            moc.deleteObject(res)
+            
+        }
+    }
+    
 
 }

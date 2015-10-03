@@ -36,6 +36,38 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>json</string>
+            </array>
+            <key>CFBundleTypeIconFile</key>
+            <string>json_icon.icns</string>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>application/json</string>
+            </array>
+            <key>CFBundleTypeName</key>
+            <string>JSON</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.json</string>
+            </array>
+            <key>LSTypeIsPackage</key>
+            <false/>
+            <key>NSDocumentClass</key>
+            <string>PLEDocument</string>
+            <key>NSExportableTypes</key>
+            <array>
+                <string>com.apple.xml-property-list</string>
+                <string>com.apple.binary-property-list</string>
+            </array>
+        </dict>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
